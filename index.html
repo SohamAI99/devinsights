@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevInsight - AI-Powered Developer Profile Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00bfff;
+            --secondary-color: #333;
+            --light-bg: #f8f9fa;
+            --dark-bg: #0d1117;
+            --light-text: #e2e8f0;
+            --dark-text: #212529;
+            --light-card: #ffffff;
+            --dark-card: #1a1f24;
+            --light-accent: #4a6baf;
+            --dark-accent: #00bfff;
+            --transition: all 0.3s ease;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .dark-mode header {
+            background-color: rgba(13, 17, 23, 0.9);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .dark-mode .logo h1 {
+            color: var(--light-text);
+        }
+
+        .logo span {
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            position: relative;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .dark-mode .nav-links a {
+            color: var(--light-text);
+        }
+
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: white;
+            transition: var(--transition);
+        }
+
+        .dark-mode .theme-toggle {
+            background-color: var(--primary-color);
+        }
+
+        .dark-mode .theme-toggle::before {
+            transform: translateX(30px);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .dark-mode .mobile-menu-btn {
+            color: var(--light-text);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(0,0,0,0.02) 25%, transparent 25%) -10px 0/ 20px 20px,
+                        linear-gradient(225deg, rgba(0,0,0,0.02) 25%, transparent 25%) -10px 0/ 20px 20px,
+                        linear-gradient(315deg, rgba(0,0,0,0.02) 25%, transparent 25%) 0px 0/ 20px 20px,
+                        linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%) 0px 0/ 20px 20px;
+            background-color: var(--light-bg);
+            transition: var(--transition);
+        }
+
+        .dark-mode .hero {
+            background-color: var(--dark-bg);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40%;
+            height: 100%;
+            background: url('https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg') 90% 30% no-repeat,
+                        url('https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg') 70% 50% no-repeat,
+                        url('https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg') 85% 70% no-repeat;
+            background-size: 100px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 191, 255, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .dark-mode .btn-outline {
+            color: var(--dark-accent);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Form Section */
+        .form-section {
+            background-color: var(--light-bg);
+            transition: var(--transition);
+        }
+
+        .dark-mode .form-section {
+            background-color: var(--dark-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            position: relative;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .section-title p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .form-container {
+            background-color: var(--light-card);
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .dark-mode .form-container {
+            background-color: var(--dark-card);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            transition: var(--transition);
+        }
+
+        .dark-mode .input-group input {
+            background-color: #1e252f;
+            border-color: #2d3642;
+            color: var(--light-text);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2);
+        }
+
+        .form-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Dashboard Section */
+        .dashboard {
+            background-color: var(--light-bg);
+            display: none;
+            transition: var(--transition);
+        }
+
+        .dark-mode .dashboard {
+            background-color: var(--dark-bg);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .user-card {
+            background-color: var(--light-card);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .dark-mode .user-card {
+            background-color: var(--dark-card);
+        }
+
+        .user-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            overflow: hidden;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar i {
+            font-size: 5rem;
+            color: #bbb;
+        }
+
+        .user-info h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info p {
+            color: #777;
+            margin-bottom: 1rem;
+        }
+
+        .dark-mode .user-info p {
+            color: #aaa;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            color: #555;
+            transition: var(--transition);
+        }
+
+        .dark-mode .social-links a {
+            background-color: #2d3642;
+            color: #eee;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .score-section {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .score-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+        }
+
+        .score-circle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-color) 75%, #eee 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark-mode .score-circle {
+            background: conic-gradient(var(--primary-color) 75%, #2d3642 0%);
+        }
+
+        .score-inner {
+            width: 80%;
+            height: 80%;
+            background-color: var(--light-card);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .dark-mode .score-inner {
+            background-color: var(--dark-card);
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            margin-top: -5px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .metric-card {
+            background-color: var(--light-card);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .dark-mode .metric-card {
+            background-color: var(--dark-card);
+        }
+
+        .metric-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .dark-mode .metric-card h4 {
+            color: var(--light-text);
+        }
+
+        .metric-card i {
+            color: var(--primary-color);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 0.5rem 0 1rem;
+        }
+
+        .dark-mode .progress-bar {
+            background-color: #2d3642;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            width: 75%;
+            transition: width 1.5s ease-in-out;
+        }
+
+        .strengths-weaknesses {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .card {
+            background-color: var(--light-card);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .dark-mode .card {
+            background-color: var(--dark-card);
+        }
+
+        .card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .dark-mode .card h3 {
+            border-bottom-color: #2d3642;
+        }
+
+        .strengths h3 {
+            color: #38b755;
+        }
+
+        .weaknesses h3 {
+            color: #e74c3c;
+        }
+
+        .card ul {
+            list-style-type: none;
+        }
+
+        .card li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .strengths li::before {
+            background-color: #38b755;
+        }
+
+        .weaknesses li::before {
+            background-color: #e74c3c;
+        }
+
+        .tips-section {
+            margin: 3rem 0;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tip-card {
+            background-color: var(--light-card);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            border-top: 4px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .dark-mode .tip-card {
+            background-color: var(--dark-card);
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tip-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .chart-section {
+            margin: 3rem 0;
+        }
+
+        .chart-container {
+            background-color: var(--light-card);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .dark-mode .chart-container {
+            background-color: var(--dark-card);
+        }
+
+        .chart-placeholder {
+            max-width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            margin-top: 1.5rem;
+        }
+
+        .dark-mode .chart-placeholder {
+            background-color: #2d3642;
+            color: #aaa;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        /* About Section */
+        .about {
+            background-color: var(--light-bg);
+            transition: var(--transition);
+        }
+
+        .dark-mode .about {
+            background-color: var(--dark-bg);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .about-card {
+            background-color: var(--light-card);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .dark-mode .about-card {
+            background-color: var(--dark-card);
+        }
+
+        .about-card h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .about-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .about-card p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            list-style-type: none;
+        }
+
+        .contact-info li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .contact-info i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .dark-mode footer {
+            background-color: #0a0d13;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo span {
+            color: var(--primary-color);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+        }
+
+        .footer-social a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        .dark-mode .alert-error {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: var(--light-bg);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition);
+                z-index: 999;
+            }
+            
+            .dark-mode .nav-links {
+                background-color: var(--dark-bg);
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .about-grid, .strengths-weaknesses, .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                text-align: center;
+            }
+            
+            .hero::before {
+                width: 100%;
+                opacity: 0.05;
+            }
+            
+            .form-container, .user-card, .metric-card, .card, .tip-card, .chart-container, .about-card {
+                padding: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <h1>Dev<span>Insight</span></h1>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="#hero" class="active">Home</a></li>
+                    <li><a href="#form-section">Analyze</a></li>
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                
+                <div class="theme-toggle" id="themeToggle"></div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="ri-menu-line"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>See Yourself Through a Recruiter's Eyes</h1>
+                <p>AI-powered insights for your GitHub, LinkedIn, LeetCode, and more. Understand how recruiters view your digital profile and get actionable recommendations.</p>
+                <a href="#form-section" class="btn">Analyze My Profile</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section" id="form-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Analyze Your Profile</h2>
+                <p>Enter your profile information below to get a comprehensive analysis of your developer online presence.</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="alert alert-error" id="formAlert">Please fill in all required fields</div>
+                <form id="analysisForm">
+                    <div class="input-group">
+                        <label for="githubUsername">GitHub Username</label>
+                        <input type="text" id="githubUsername" placeholder="e.g., johndoe">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="linkedinUrl">LinkedIn Profile URL</label>
+                        <input type="text" id="linkedinUrl" placeholder="e.g., https://linkedin.com/in/johndoe">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="leetcodeUsername">LeetCode Username</label>
+                        <input type="text" id="leetcodeUsername" placeholder="e.g., leetcoder123">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="codeforcesHandle">Codeforces Handle</label>
+                        <input type="text" id="codeforcesHandle" placeholder="e.g., coder123">
+                    </div>
+                    
+                    <button type="submit" class="btn form-btn">Start Analysis</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard" id="dashboard">
+        <div class="container">
+            <div class="section-title">
+                <h2>Your Developer Profile Analysis</h2>
+                <p>Here's how your online presence looks to recruiters and potential employers</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="user-card">
+                    <div class="user-avatar">
+                        <i class="ri-user-line"></i>
+                    </div>
+                    <div class="user-info">
+                        <h3>John Developer</h3>
+                        <p>Full Stack Developer</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" title="GitHub"><i class="ri-github-fill"></i></a>
+                        <a href="#" title="LinkedIn"><i class="ri-linkedin-box-fill"></i></a>
+                        <a href="#" title="LeetCode"><i class="ri-code-box-line"></i></a>
+                        <a href="#" title="Codeforces"><i class="ri-terminal-box-fill"></i></a>
+                    </div>
+                </div>
+                
+                <div class="score-section">
+                    <h3>Recruiter Readiness Score</h3>
+                    <div class="score-container">
+                        <div class="score-circle">
+                            <div class="score-inner">
+                                <div class="score-value">75</div>
+                                <div class="score-label">out of 100</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <h4><i class="ri-github-fill"></i> GitHub Score</h4>
+                            <p>Based on repositories, commits, and contributions</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 82%;"></div>
+                            </div>
+                            <p><strong>82/100</strong> - Above Average</p>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <h4><i class="ri-terminal-box-fill"></i> Codeforces Rating</h4>
+                            <p>Based on competition performance and problem solving</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 68%;"></div>
+                            </div>
+                            <p><strong>68/100</strong> - Good</p>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <h4><i class="ri-code-box-line"></i> LeetCode Score</h4>
+                            <p>Based on problems solved and contest rankings</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                            <p><strong>75/100</strong> - Strong</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="strengths-weaknesses">
+                <div class="card strengths">
+                    <h3><i class="ri-arrow-up-circle-line"></i> Strengths</h3>
+                    <ul>
+                        <li><strong>Consistent Contributions</strong> - Regular GitHub activity shows commitment.</li>
+                        <li><strong>Project Diversity</strong> - You've demonstrated skills across multiple technologies.</li>
+                        <li><strong>Problem Solving</strong> - Strong performance in algorithmic challenges.</li>
+                        <li><strong>Documentation</strong> - Your repositories have clear READMEs and documentation.</li>
+                    </ul>
+                </div>
+                
+                <div class="card weaknesses">
+                    <h3><i class="ri-arrow-down-circle-line"></i> Areas to Improve</h3>
+                    <ul>
+                        <li><strong>Collaborations</strong> - Consider contributing to open source projects.</li>
+                        <li><strong>Profile Completeness</strong> - Your LinkedIn profile is missing key skills.</li>
+                        <li><strong>Advanced Challenges</strong> - Try harder problems on LeetCode and Codeforces.</li>
+                        <li><strong>Project Showcasing</strong> - Add more detailed descriptions to your projects.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <h3 class="section-title">Career Tips</h3>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <h4>Optimize Your GitHub</h4>
+                        <p>Pin your best repositories and ensure each has a descriptive README. Add topics and tags to make your projects more discoverable.</p>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <h4>Enhance LinkedIn Presence</h4>
+                        <p>Add recommendations and endorsements. Complete the skills section and include project links and descriptions.</p>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <h4>Competitive Programming</h4>
+                        <p>Practice consistently on both platforms. Focus on medium-difficulty problems and participate in weekly contests.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h3>Peer Comparison</h3>
+                <div class="chart-container">
+                    <p>See how your profile compares to other developers in your field</p>
+                    <div class="chart-placeholder">
+                        <p>Peer comparison chart visualization</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="#" class="btn">Download Report</a>
+                <a href="#form-section" class="btn btn-outline">Re-analyze</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About DevInsight</h2>
+                <p>Learn more about our AI-powered developer profile analysis tool</p>
+            </div>
+            
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>Our Mission</h3>
+                    <p>DevInsight was created to help developers understand how their online presence appears to recruiters and potential employers. We use AI to analyze profiles across multiple platforms and provide actionable insights.</p>
+                    <p>Our goal is to bridge the gap between developers and recruiters, helping talented individuals showcase their skills effectively and stand out in a competitive job market.</p>
+                </div>
+                
+                <div class="about-card">
+                    <h3>Key Features</h3>
+                    <ul class="contact-info">
+                        <li><i class="ri-check-line"></i> Comprehensive profile analysis across multiple platforms</li>
+                        <li><i class="ri-check-line"></i> AI-powered scoring system based on recruiter preferences</li>
+                        <li><i class="ri-check-line"></i> Personalized recommendations for profile improvement</li>
+                        <li><i class="ri-check-line"></i> Peer comparison with industry benchmarks</li>
+                        <li><i class="ri-check-line"></i> Detailed reports with actionable insights</li>
+                    </ul>
+                </div>
+                
+                <div class="about-card" id="contact">
+                    <h3>Contact Us</h3>
+                    <p>Have questions or feedback? Reach out to our team!</p>
+                    <ul class="contact-info">
+                        <li><i class="ri-mail-line"></i> hello@devinsight.ai</li>
+                        <li><i class="ri-phone-line"></i> +1 (555) 123-4567</li>
+                        <li><i class="ri-map-pin-line"></i> 123 Tech Street, San Francisco, CA</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Dev<span>Insight</span></div>
+                <p>AI-Powered Developer Profile Analysis</p>
+                
+                <div class="footer-links">
+                    <a href="#hero">Home</a>
+                    <a href="#form-section">Analyze</a>
+                    <a href="#dashboard">Dashboard</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                
+                <div class="footer-social">
+                    <a href="#"><i class="ri-github-fill"></i></a>
+                    <a href="#"><i class="ri-linkedin-box-fill"></i></a>
+                    <a href="#"><i class="ri-twitter-x-fill"></i></a>
+                    <a href="#"><i class="ri-facebook-fill"></i></a>
+                </div>
+                
+                <div class="copyright">
+                    &copy; 2023 DevInsight. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+        const navItems = document.querySelectorAll('.nav-links a');
+        const analysisForm = document.getElementById('analysisForm');
+        const formAlert = document.getElementById('formAlert');
+        const dashboardSection = document.getElementById('dashboard');
+
+        // Theme Toggle
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+        });
+
+        // Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="ri-close-line"></i>' 
+                : '<i class="ri-menu-line"></i>';
+        });
+
+        // Close mobile menu when clicking on a nav link
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="ri-menu-line"></i>';
+            });
+        });
+
+        // Active Navigation Link on Scroll
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY;
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    navItems.forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('href') === `#${sectionId}`) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+
+analysisForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const githubUsername = document.getElementById('githubUsername').value.trim();
+    const linkedinUrl = document.getElementById('linkedinUrl').value.trim();
+    const leetcodeUsername = document.getElementById('leetcodeUsername').value.trim();
+    const codeforcesHandle = document.getElementById('codeforcesHandle').value.trim();
+
+    if (!githubUsername || !linkedinUrl || !leetcodeUsername || !codeforcesHandle) {
+        formAlert.style.display = 'block';
+        return;
+    }
+
+    formAlert.style.display = 'none';
+
+    try {
+        const response = await fetch('http://localhost:5000/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                githubUsername,
+                linkedinUrl,
+                leetcodeUsername,
+                codeforcesHandle
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to analyze profile');
+        }
+
+        const data = await response.json();
+
+        // Update dashboard with received data
+        updateDashboard(data);
+
+        dashboardSection.style.display = 'block';
+
+        setTimeout(() => {
+            dashboardSection.scrollIntoView({ behavior: 'smooth' });
+        }, 500);
+    } catch (error) {
+        console.error(error);
+        formAlert.textContent = 'Error analyzing profile. Please try again.';
+        formAlert.style.display = 'block';
+    }
+});
+
+// Function to update dashboard with API response
+function updateDashboard(data) {
+    // Update overall score
+    const scoreValue = dashboardSection.querySelector('.score-value');
+    scoreValue.textContent = data.scores.overall;
+
+    // Update platform scores
+    const metricCards = dashboardSection.querySelectorAll('.metric-card');
+    metricCards.forEach((card) => {
+        const title = card.querySelector('h4').textContent.toLowerCase();
+        let score = 0;
+        if (title.includes('github')) score = data.scores.github;
+        else if (title.includes('linkedin')) score = data.scores.linkedin;
+        else if (title.includes('leetcode')) score = data.scores.leetcode;
+        else if (title.includes('codeforces')) score = data.scores.codeforces;
+
+        const progressFill = card.querySelector('.progress-fill');
+        progressFill.style.width = score + '%';
+
+        const scoreText = card.querySelector('p strong');
+        if (scoreText) scoreText.textContent = `${score}/100`;
+    });
+
+    // Update strengths
+    const strengthsList = dashboardSection.querySelector('.strengths ul');
+    strengthsList.innerHTML = '';
+    data.strengths.forEach((item) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${item.split(' - ')[0]}</strong>${item.includes(' - ') ? ' - ' + item.split(' - ')[1] : ''}`;
+        strengthsList.appendChild(li);
+    });
+
+    // Update weaknesses
+    const weaknessesList = dashboardSection.querySelector('.weaknesses ul');
+    weaknessesList.innerHTML = '';
+    data.weaknesses.forEach((item) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${item.split(' - ')[0]}</strong>${item.includes(' - ') ? ' - ' + item.split(' - ')[1] : ''}`;
+        weaknessesList.appendChild(li);
+    });
+
+    // Update recommendations (career tips)
+    const tipsGrid = dashboardSection.querySelector('.tips-grid');
+    tipsGrid.innerHTML = '';
+    data.recommendations.forEach((tip) => {
+        const card = document.createElement('div');
+        card.className = 'tip-card';
+        card.innerHTML = `<h4>${tip.split('.')[0]}</h4><p>${tip}</p>`;
+        tipsGrid.appendChild(card);
+    });
+}
+
+        // Create animated loading effect for progress bars
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 300);
+            });
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            
+            // Add a class to the body once everything is loaded
+            setTimeout(() => {
+                body.classList.add('loaded');
+            }, 100);
+        });
+
+        // Show dashboard when clicking on Dashboard nav link (for demo purposes)
+        navItems.forEach(item => {
+            if (item.getAttribute('href') === '#dashboard') {
+                item.addEventListener('click', () => {
+                    dashboardSection.style.display = 'block';
+                    animateProgressBars();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
