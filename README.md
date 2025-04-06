@@ -8,7 +8,7 @@ DevInsight is an AI-powered tool that analyzes a developer’s online presence a
 
 ## 📸 Demo
 
-**🔗 Live Demo:** [Insert your deployed frontend link]  
+**🔗 Live Demo:** https://devinsights-m3yh.vercel.app/
 
 ---
 
