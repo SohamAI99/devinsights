@@ -56,7 +56,6 @@ DevInsight is an AI-powered tool that analyzes a developer’s online presence a
 
 - 🔁 Real-time sync with APIs  
 - 🤖 Advanced ML model integration  
-- 📃 Resume builder based on online activity  
 - 🧑‍💼 Recruiter-side profile viewer  
 - 📈 Learning path & certification suggestions
 
