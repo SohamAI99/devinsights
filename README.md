@@ -62,16 +62,6 @@ DevInsight is an AI-powered tool that analyzes a developer’s online presence a
 
 ---
 
-## 🧑‍💻 Contributors
-
-- **Soham Lamb** – Backend (Node.js, MongoDB, API Integration)  
-- [Add teammate names & roles here]
-
-🔗 **GitHub:** [Your GitHub Link]  
-🔗 **LinkedIn:** [Your LinkedIn Profile]  
-
----
-
 ## 📄 License
 
 MIT License — Feel free to use and improve. Contributions are welcome!
