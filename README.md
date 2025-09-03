@@ -1,7 +1,5 @@
 # 🚀 DevInsight – AI-Powered Developer Profile Analyzer
 
-> _Your digital footprint, decoded by AI._
-
 DevInsight is an AI-powered tool that analyzes a developer’s online presence across platforms like GitHub, LinkedIn, LeetCode, and Codeforces. It provides personalized insights, profile scoring, improvement tips, and peer comparison — all to help you become recruiter-ready.
 
 ---
