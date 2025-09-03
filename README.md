@@ -64,5 +64,3 @@ DevInsight is an AI-powered tool that analyzes a developer’s online presence a
 MIT License — Feel free to use and improve. Contributions are welcome!
 
 ---
-
-> 💬 Have feedback or ideas? Open an issue or ping us on LinkedIn. Let’s empower the developer community together!
